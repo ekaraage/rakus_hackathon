@@ -24,9 +24,8 @@ onMounted(() => {
 // #region browser event handler
 // 投稿メッセージをサーバに送信する
 const onPublish = () => {
-
   // 入力欄を初期化
-
+  socket.emit("publishEvent",chatContent.value)
 }
 
 // 退室メッセージをサーバに送信する
@@ -75,7 +74,7 @@ const registerSocketEvent = () => {
 
   // 投稿イベントを受け取ったら実行
   socket.on("publishEvent", (data) => {
-
+    chatList.push(data)
   })
 }
 // #endregion
@@ -86,9 +85,9 @@ const registerSocketEvent = () => {
     <h1 class="text-h3 font-weight-medium">Vue.js Chat チャットルーム</h1>
     <div class="mt-10">
       <p>ログインユーザ：{{ userName }}さん</p>
-      <textarea variant="outlined" placeholder="投稿文を入力してください" rows="4" class="area"></textarea>
+      <textarea variant="outlined" placeholder="投稿文を入力してください" rows="4" class="area" v-model="chatContent"></textarea>
       <div class="mt-5">
-        <button class="button-normal">投稿</button>
+        <button class="button-normal" @click="onPublish">投稿</button>
         <button class="button-normal util-ml-8px">メモ</button>
       </div>
       <div class="mt-5" v-if="chatList.length !== 0">
