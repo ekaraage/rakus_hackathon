@@ -1,8 +1,14 @@
 <script setup>
-import { ref, provide } from "vue"
+import { inject } from "vue"
+import { useRouter } from "vue"
 
-const message = ref("Hello World!")
-provide("message", message)
+const router = useRouter();
+
+const message = inject("message")
+const onClick = () => {
+  message.value = "Hello Vue.js!"
+  router.push({ name: "hello" })
+}
 
 </script>
 
