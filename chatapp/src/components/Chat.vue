@@ -26,6 +26,7 @@ onMounted(() => {
 const onPublish = () => {
   // 入力欄を初期化
   socket.emit("publishEvent",chatContent.value)
+  chatContent.value=""
 }
 
 // 退室メッセージをサーバに送信する
@@ -55,7 +56,7 @@ const onReceiveExit = (data) => {
 
 // サーバから受信した投稿メッセージを画面上に表示する
 const onReceivePublish = (data) => {
-  chatList.push()
+  chatList.push(data)
 }
 // #endregion
 
@@ -74,7 +75,7 @@ const registerSocketEvent = () => {
 
   // 投稿イベントを受け取ったら実行
   socket.on("publishEvent", (data) => {
-    chatList.push(data)
+    onReceivePublish(data)
   })
 }
 // #endregion
