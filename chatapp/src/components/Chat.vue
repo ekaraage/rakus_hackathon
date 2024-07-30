@@ -13,6 +13,7 @@ const socket = socketManager.getInstance()
 // #region reactive variable
 const chatContent = ref("")
 const chatList = reactive([])
+
 // #endregion
 
 // #region lifecycle
@@ -42,6 +43,7 @@ const onMemo = () => {
   chatContent.value = ""
 
 }
+
 // #endregion
 
 // #region socket event handler
@@ -58,6 +60,17 @@ const onReceiveExit = (data) => {
 // サーバから受信した投稿メッセージを画面上に表示する
 const onReceivePublish = (data) => {
   chatList.push(data)
+}
+
+// 投票結果とウルフ，退出を促すメッセージを画面上に表示する
+const onGameFinish = (data) => {
+  // サーバから受信した一番投票数が多かった人を受信して画面上に表示する
+  chatList.push(data.voted + "さんがウルフと疑われています。")
+  // 誰がウルフかを画面上に表示する
+  chatList.push(data.wolf + "さんがウルフと疑われています。")
+  //退出を促すメッセージを画面上に表示する
+  chatList.push("1分後に自動でルームを閉じます。")
+  chatList.push("速やかに退出してください。")
 }
 // #endregion
 
@@ -78,6 +91,12 @@ const registerSocketEvent = () => {
   socket.on("publishEvent", (data) => {
     onReceivePublish(data)
   })
+
+  // 一番投票数が多かった人を受信する
+  socket.on("gameFinishEvent",(data) => {
+    onGameFinish(data)
+  })
+
 }
 // #endregion
 </script>
