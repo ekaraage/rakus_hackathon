@@ -4,7 +4,7 @@ const allUsers = reactive([])
 const theme = "x"
 const wolf_theme = "y"
 const playerNum = 3
-
+const wolfIndex = Math.floor(Math.random() * playerNum)
 
 export default (io, socket) => {
   // 入室メッセージをクライアントに送信する
@@ -12,11 +12,11 @@ export default (io, socket) => {
     socket.broadcast.emit("enterEvent", data)
     allUsers.push({
       name: data,
-      socket: socket
+      socket: socket,
+      voted: 0
     })
     console.log(allUsers)
     if (allUsers.length === playerNum) {
-      const wolfIndex = Math.floor(Math.random() * playerNum)
       allUsers.forEach((user, index) => {
         const selectedTheme = (index === wolfIndex) ? wolf_theme : theme
         if (socket.id !== user.socket.id) {
@@ -36,5 +36,22 @@ export default (io, socket) => {
   // 投稿メッセージを送信する
   socket.on("publishEvent", (data) => {
     io.sockets.emit("publishEvent", data)
+  })
+
+  // 投票結果
+  socket.on("vote", (data) => {
+    console.log(data)
+    allUsers[allUsers.findIndex(u => u.name === data)].voted++
+    // 全員投票終わったら
+    if(allUsers.reduce(function(sum, u){return sum + u.voted;}, 0) === playerNum){
+      var votedpls = []
+      var votedpl_score = 0
+      allUsers.forEach(u => {
+        if(u.voted > votedpl_score){votedpls = [u.name]}
+        else if(u.voted === votedpl_score){votedpls.push(u.name)}
+      })
+      const votedpls_str = votedpls.join(" さんと ") + " さん"
+      io.sockets.emit("gameFinishEvent",{voted:votedpls_str, wolf:allUsers[wolfIndex].name})
+    }
   })
 }
