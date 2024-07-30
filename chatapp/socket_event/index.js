@@ -1,3 +1,7 @@
+import { reactive } from "vue"
+
+const allUsers = reactive([])
+
 export default (io, socket) => {
   // 入室メッセージをクライアントに送信する
   socket.on("enterEvent", (data) => {
