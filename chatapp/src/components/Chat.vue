@@ -59,6 +59,11 @@ const onReceiveExit = (data) => {
 const onReceivePublish = (data) => {
   chatList.unshift(data)
 }
+
+// サーバから受信したゲーム開始メッセージを画面上に表示する
+const onReceiveGameStart = (data) => {
+  chatList.unshift(`ゲームを開始しました。テーマは${data}です。`)
+}
 // #endregion
 
 // #region local methods
@@ -77,6 +82,10 @@ const registerSocketEvent = () => {
   // 投稿イベントを受け取ったら実行
   socket.on("publishEvent", (data) => {
     onReceivePublish(`${data.name}さん：${data.content}`)
+  })
+
+  socket.on("gameStartEvent", (data) => {
+    onReceiveGameStart(data)
   })
 }
 // #endregion
