@@ -25,7 +25,7 @@ onMounted(() => {
 // 投稿メッセージをサーバに送信する
 const onPublish = () => {
   // 入力欄を初期化
-  socket.emit("publishEvent", chatContent.value)
+  socket.emit("publishEvent", {name:userName.value, content:chatContent.value})
   chatContent.value = ""
 }
 
@@ -76,7 +76,7 @@ const registerSocketEvent = () => {
 
   // 投稿イベントを受け取ったら実行
   socket.on("publishEvent", (data) => {
-    onReceivePublish(data)
+    onReceivePublish(`${data.name}さん：${data.content}`)
   })
 }
 // #endregion
