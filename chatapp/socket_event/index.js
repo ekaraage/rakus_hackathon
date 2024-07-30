@@ -1,7 +1,9 @@
 import { reactive } from "vue"
 
 const allUsers = reactive([])
-const theme = ["x", "y"]
+const theme = "x"
+const wolf_theme = "y"
+const playerNum = 3
 
 
 export default (io, socket) => {
@@ -13,9 +15,10 @@ export default (io, socket) => {
       socket: socket
     })
     console.log(allUsers)
-    if (allUsers.length === 3) {
-      allUsers.forEach(user => {
-        const selectedTheme = theme[Math.floor(Math.random() * theme.length)];
+    if (allUsers.length === playerNum) {
+      const wolfIndex = Math.floor(Math.random() * playerNum)
+      allUsers.forEach((user, index) => {
+        const selectedTheme = (index === wolfIndex) ? wolf_theme : theme
         if (socket.id !== user.socket.id) {
           socket.to(user.socket.id).emit("gameStartEvent", selectedTheme);
         } else {
