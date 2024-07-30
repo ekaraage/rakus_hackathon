@@ -57,7 +57,7 @@ const onReceiveExit = (data) => {
 
 // サーバから受信した投稿メッセージを画面上に表示する
 const onReceivePublish = (data) => {
-  chatList.push(data)
+  chatList.unshift(data)
 }
 // #endregion
 
