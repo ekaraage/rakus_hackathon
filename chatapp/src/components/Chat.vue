@@ -4,6 +4,7 @@ import socketManager from '../socketManager.js'
 
 // #region global state
 const userName = inject("userName")
+const allUsers = inject("allUsers")
 // #endregion
 
 // #region local variable
@@ -60,6 +61,7 @@ const onReceiveExit = (data) => {
 // サーバから受信した投稿メッセージを画面上に表示する
 const onReceivePublish = (data) => {
   chatList.unshift(data)
+  console.log(allUsers)
 }
 
 // サーバから受信したゲーム開始メッセージを画面上に表示する

@@ -1,6 +1,6 @@
-import { reactive } from "vue"
+import { inject } from "vue"
 
-const allUsers = reactive([])
+const allUsers = inject("allUsers")
 const theme = "x"
 const wolf_theme = "y"
 const playerNum = 3
