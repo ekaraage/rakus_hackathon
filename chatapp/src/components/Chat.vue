@@ -70,12 +70,12 @@ const onReceiveGameStart = (data) => {
 // 投票結果とウルフ，退出を促すメッセージを画面上に表示する
 const onGameFinish = (data) => {
   // サーバから受信した一番投票数が多かった人を受信して画面上に表示する
-  chatList.push(data.voted + "さんがウルフと疑われています。")
+  chatList.unshift(data.voted + "がウルフと疑われています。")
   // 誰がウルフかを画面上に表示する
-  chatList.push(data.wolf + "さんがウルフと疑われています。")
+  chatList.unshift(data.wolf + "がウルフと疑われています。")
   //退出を促すメッセージを画面上に表示する
-  chatList.push("1分後に自動でルームを閉じます。")
-  chatList.push("速やかに退出してください。")
+  chatList.unshift("1分後に自動でルームを閉じます。")
+  chatList.unshift("速やかに退出してください。")
 }
 // #endregion
 
