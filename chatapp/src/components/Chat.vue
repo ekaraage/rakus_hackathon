@@ -1,6 +1,9 @@
 <script setup>
 import { inject, ref, reactive, onMounted } from "vue"
+import { useRouter } from "vue-router"
 import socketManager from '../socketManager.js'
+
+const router = useRouter()
 
 // #region global state
 const userName = inject("userName")
@@ -65,6 +68,8 @@ const onReceivePublish = (data) => {
 // サーバから受信したゲーム開始メッセージを画面上に表示する
 const onReceiveGameStart = (data) => {
   chatList.unshift(`ゲームを開始しました。テーマは${data}です。`)
+  // for test
+  // socket.emit("vote", "あいうえお")
 }
 
 // 投票結果とウルフ，退出を促すメッセージを画面上に表示する
@@ -76,6 +81,11 @@ const onGameFinish = (data) => {
   //退出を促すメッセージを画面上に表示する
   chatList.unshift("1分後に自動でルームを閉じます。")
   chatList.unshift("速やかに退出してください。")
+  // 1分後に自動でルームを閉じる
+  setTimeout(() => {
+    router.push({ name: "login" })
+    socket.emit("roomCloseEvent")
+  }, 60000)
 }
 // #endregion
 
