@@ -41,10 +41,10 @@ const onExit = () => {
 // メモを画面上に表示する
 const onMemo = () => {
   // メモの内容を表示
-  chatList.unshift(`${userName.value}さんのメモ: ${chatContent.value}`)
+  chatList.unshift({role:-1, message:`${userName.value}さんのメモ: ${chatContent.value}`})
   // 入力欄を初期化
   chatContent.value = ""
-
+  console.log(chatList)
 }
 
 // #endregion
@@ -52,36 +52,34 @@ const onMemo = () => {
 // #region socket event handler
 // サーバから受信した入室メッセージ画面上に表示する
 const onReceiveEnter = (data) => {
-  chatList.unshift(`${data}さんが入室しました。`)
+  chatList.unshift({role:-1, message:`${data}さんが入室しました。`})
 }
 
 // サーバから受信した退室メッセージを受け取り画面上に表示する
 const onReceiveExit = (data) => {
-  chatList.unshift(data + "さんが退出しました。")
+  chatList.unshift({role:-1, message:data + "さんが退出しました。"})
 }
 
 // サーバから受信した投稿メッセージを画面上に表示する
 const onReceivePublish = (data) => {
-  chatList.unshift(data)
+  chatList.unshift({role:data.name, message:`${data.name}さん：${data.content}`})
 }
 
 // サーバから受信したゲーム開始メッセージを画面上に表示する
 const onReceiveGameStart = (data) => {
-  chatList.unshift(`ゲームを開始しました。テーマは${data}です。`)
-  // for test
-  // socket.emit("vote", "あいうえお")
+  chatList.unshift({role:-1, message:`ゲームを開始しました。テーマは${data}です。`})
 }
 
 // 投票結果とウルフ，退出を促すメッセージを画面上に表示する
 const onGameFinish = (data) => {
   // サーバから受信した一番投票数が多かった人を受信して画面上に表示する
-  chatList.unshift(data.voted + "がウルフと疑われています。")
+  chatList.unshift({role:-1, message:data.voted + "がウルフと疑われています。"})
   // 誰がウルフかを画面上に表示する
-  chatList.unshift(data.wolf + "がウルフと疑われています。")
+  chatList.unshift({role:-1, message:data.wolf + "がウルフと疑われています。"})
   //退出を促すメッセージを画面上に表示する
-  chatList.unshift("1分後に自動でルームを閉じます。")
-  chatList.unshift("速やかに退出してください。")
   // 1分後に自動でルームを閉じる
+  chatList.unshift({role:-1, message:"1分後に自動でルームを閉じます。"})
+  chatList.unshift({role:-1, message:"速やかに退出してください。"})
   setTimeout(() => {
     router.push({ name: "login" })
     socket.emit("roomCloseEvent")
@@ -104,7 +102,7 @@ const registerSocketEvent = () => {
 
   // 投稿イベントを受け取ったら実行
   socket.on("publishEvent", (data) => {
-    onReceivePublish(`${data.name}さん：${data.content}`)
+    onReceivePublish(data)
   })
 
   socket.on("gameStartEvent", (data) => {
@@ -132,7 +130,7 @@ const registerSocketEvent = () => {
       </div>
       <div class="mt-5" v-if="chatList.length !== 0">
         <ul>
-          <li class="item mt-4" v-for="(chat, i) in chatList" :key="i">{{ chat }}</li>
+          <li class="item mt-4" v-for="(chat, i) in chatList" :key="i">{{ chat.message }}</li>
         </ul>
       </div>
     </div>
