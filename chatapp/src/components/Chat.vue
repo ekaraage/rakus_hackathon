@@ -1,6 +1,9 @@
 <script setup>
 import { inject, ref, reactive, onMounted } from "vue"
+import { useRouter } from "vue-router"
 import socketManager from '../socketManager.js'
+
+const router = useRouter()
 
 // #region global state
 const userName = inject("userName")
@@ -74,8 +77,13 @@ const onGameFinish = (data) => {
   // 誰がウルフかを画面上に表示する
   chatList.unshift({role:-1, message:data.wolf + "がウルフと疑われています。"})
   //退出を促すメッセージを画面上に表示する
+  // 1分後に自動でルームを閉じる
   chatList.unshift({role:-1, message:"1分後に自動でルームを閉じます。"})
   chatList.unshift({role:-1, message:"速やかに退出してください。"})
+  setTimeout(() => {
+    router.push({ name: "login" })
+    socket.emit("roomCloseEvent")
+  }, 60000)
 }
 // #endregion
 

@@ -15,7 +15,6 @@ export default (io, socket) => {
       socket: socket,
       voted: 0
     })
-    console.log(allUsers)
     if (allUsers.length === playerNum) {
       allUsers.forEach((user, index) => {
         const selectedTheme = (index === wolfIndex) ? wolf_theme : theme
@@ -54,4 +53,9 @@ export default (io, socket) => {
       io.sockets.emit("gameFinishEvent",{voted:votedpls_str, wolf:allUsers[wolfIndex].name})
     }
   })
+
+  socket.on("roomCloseEvent", () => {
+    allUsers.splice(0, allUsers.length)
+  })
 }
+
