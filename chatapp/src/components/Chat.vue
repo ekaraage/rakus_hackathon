@@ -2,9 +2,10 @@
 import { inject, ref, reactive, onMounted } from "vue"
 import socketManager from '../socketManager.js'
 
+
 // #region global state
 const userName = inject("userName")
-const allUsers = inject("allUsers")
+let allUsers = []
 // #endregion
 
 // #region local variable
@@ -14,6 +15,7 @@ const socket = socketManager.getInstance()
 // #region reactive variable
 const chatContent = ref("")
 const chatList = reactive([])
+const selected = ref("")
 
 // #endregion
 
@@ -29,6 +31,7 @@ const onPublish = () => {
   // 入力欄を初期化
   socket.emit("publishEvent", {name:userName.value, content:chatContent.value})
   chatContent.value = ""
+
 }
 
 // 退室メッセージをサーバに送信する
@@ -43,6 +46,14 @@ const onMemo = () => {
   // 入力欄を初期化
   chatContent.value = ""
 
+}
+
+const onVote = () => { 
+  if (!selected.value) {
+    alert("ウルフが選択されていません。");
+    return;
+  }
+  socket.emit("vote",selected)
 }
 
 // #endregion
@@ -61,8 +72,11 @@ const onReceiveExit = (data) => {
 // サーバから受信した投稿メッセージを画面上に表示する
 const onReceivePublish = (data) => {
   chatList.unshift(data)
-  console.log(allUsers)
 }
+
+const onUpdateAllUsers = (data) => { 
+  allUsers = reactive(data)
+} 
 
 // サーバから受信したゲーム開始メッセージを画面上に表示する
 const onReceiveGameStart = (data) => {
@@ -108,6 +122,9 @@ const registerSocketEvent = () => {
     onGameFinish(data)
   })
 
+  socket.on("updateAllUsers", (data) => { 
+    onUpdateAllUsers(data)
+  })
 }
 // #endregion
 </script>
@@ -117,6 +134,15 @@ const registerSocketEvent = () => {
     <h1 class="text-h3 font-weight-medium">Vue.js Chat チャットルーム</h1>
     <div class="mt-10">
       <p>ログインユーザ：{{ userName }}さん</p>
+      
+        <div id="vote">
+          <v-radio-group v-model="selected" v-if=true background-color="black" :key="allUsers">
+            <v-radio v-for="(name,index) in allUsers" :label="name" :value="name" color="primary"></v-radio>
+          </v-radio-group>
+          <p>怪しい人:{{ selected }} </p>
+          <button class="button-normal" @click="onVote">投票</button>
+        </div>
+    
       <textarea variant="outlined" placeholder="投稿文を入力してください" rows="4" class="area" v-model="chatContent"></textarea>
       <div class="mt-5">
         <button class="button-normal" @click="onPublish">投稿</button>
@@ -145,9 +171,6 @@ const registerSocketEvent = () => {
   margin-top: 8px;
 }
 
-.item {
-  display: block;
-}
 
 .util-ml-8px {
   margin-left: 8px;
