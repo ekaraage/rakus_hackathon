@@ -130,7 +130,14 @@ const registerSocketEvent = () => {
       </div>
       <div class="mt-5" v-if="chatList.length !== 0">
         <ul>
-          <li class="item mt-4" v-for="(chat, i) in chatList" :key="i">{{ chat.message }}</li>
+          <li class="item mt-4" v-for="(chat, i) in chatList" :key="i">
+            <span v-if="chat.role === -1">
+              システム：{{ chat.message }}
+            </span>
+            <span v-else>
+              {{ chat.message }}
+            </span>
+          </li>
         </ul>
       </div>
     </div>
