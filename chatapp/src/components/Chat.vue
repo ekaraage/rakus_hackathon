@@ -75,7 +75,7 @@ const onGameFinish = (data) => {
   // サーバから受信した一番投票数が多かった人を受信して画面上に表示する
   chatList.unshift({role:-1, message:data.voted + "がウルフと疑われています。"})
   // 誰がウルフかを画面上に表示する
-  chatList.unshift({role:-1, message:data.wolf + "がウルフと疑われています。"})
+  chatList.unshift({role:-1, message:data.wolf + "がウルフです。"})
   //退出を促すメッセージを画面上に表示する
   // 1分後に自動でルームを閉じる
   chatList.unshift({role:-1, message:"1分後に自動でルームを閉じます。"})
@@ -131,11 +131,9 @@ const registerSocketEvent = () => {
       <div class="mt-5" v-if="chatList.length !== 0">
         <ul>
           <li class="item mt-4" v-for="(chat, i) in chatList" :key="i">
-            <span v-if="chat.role === -1">
-              <span class="system-message">
+            <span class="system-message" v-if="chat.role === -1">
               システム：{{ chat.message }}
               </span>
-            </span>
             <span v-else>
               {{ chat.message }}
             </span>
