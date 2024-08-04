@@ -132,7 +132,9 @@ const registerSocketEvent = () => {
         <ul>
           <li class="item mt-4" v-for="(chat, i) in chatList" :key="i">
             <span v-if="chat.role === -1">
+              <span class="system-message">
               システム：{{ chat.message }}
+              </span>
             </span>
             <span v-else>
               {{ chat.message }}
@@ -169,5 +171,9 @@ const registerSocketEvent = () => {
 .button-exit {
   color: #000;
   margin-top: 8px;
+}
+
+.system-message {
+  color: blue;
 }
 </style>
