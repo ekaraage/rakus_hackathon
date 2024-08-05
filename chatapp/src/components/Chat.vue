@@ -16,6 +16,7 @@ const socket = socketManager.getInstance()
 const chatContent = ref("")
 const chatList = reactive([])
 const selected = ref("")
+const popupVisible = ref(false)
 
 // #endregion
 
@@ -53,7 +54,17 @@ const onVote = () => {
     alert("ウルフが選択されていません。");
     return;
   }
-  socket.emit("vote",selected)
+  socket.emit("vote", selected.value)
+  console.log(selected.value)
+  closePopup()
+}
+
+const showPopup = () => { 
+  popupVisible.value=true
+}
+
+const closePopup = () => {
+  popupVisible.value = false
 }
 
 // #endregion
@@ -134,12 +145,12 @@ const registerSocketEvent = () => {
     <h1 class="text-h3 font-weight-medium">Vue.js Chat チャットルーム</h1>
     <div class="mt-10">
       <p>ログインユーザ：{{ userName }}さん</p>
-      
-        <div id="vote">
-          <v-radio-group v-model="selected" v-if=true background-color="black" :key="allUsers">
+      <button class="button-normal" @click="showPopup" :key="popupVisible.value">テスト</button>
+        <div id="vote" v-if="popupVisible">
+          <v-radio-group v-model="selected" v-if=true background-color="black" :key="chatList">
             <v-radio v-for="(name,index) in allUsers" :label="name" :value="name" color="primary"></v-radio>
           </v-radio-group>
-          <p>怪しい人:{{ selected }} </p>
+          <p>怪しい人:<b>{{ selected }}</b> </p>
           <button class="button-normal" @click="onVote">投票</button>
         </div>
     
