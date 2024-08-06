@@ -56,7 +56,6 @@ export default (io, socket) => {
         if (seconds == 0) { 
           io.sockets.emit("timeUp", data)
         }
-        console.log(seconds)
       }, 1000)
 
     }
