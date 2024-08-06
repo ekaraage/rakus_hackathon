@@ -25,12 +25,19 @@ export default (io, socket) => {
   const removeUser = (socket) => {
     allUsers.splice(allUsers.findIndex(u => u.socket.id === socket.id), 1)
   }
+  socket.on("tryenterEvent", (data) => {
+    var allUsersName=[]
+    allUsers.forEach((user, index) => {
+        allUsersName.push(user.name)
+     })
+    const sendObject = {
+      isStarted: isStarted,
+      allUsersName: allUsersName
+    }
+    socket.emit("isStartedAndAllUsers", sendObject)
+  })
   // 入室メッセージをクライアントに送信する
   socket.on("enterEvent", (data) => {
-    socket.emit("isStarted", isStarted)
-    if (isStarted) {
-      return;
-    }
     socket.broadcast.emit("enterEvent", data)
     //userStore.addUser(data, socket, 0)
     allUsers.push({
