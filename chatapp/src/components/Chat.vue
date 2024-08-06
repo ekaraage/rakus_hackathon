@@ -172,7 +172,10 @@ const registerSocketEvent = () => {
       <div class="chat_box">
         <div class="chat_area mt-5">
           <ul>
-            <li class="item mt-4" v-for="(chat, i) in chatList" :key="i">{{ chat.message }}</li>
+            <li class="item mt-4" v-for="(chat, i) in chatList" :key="i">
+              <span class="rolehighlight" v-if="chat.role === highlightRole"><a>{{ chat.role }} さん</a>: {{ chat.message }}</span>
+              <span v-else><a class="role" @click="setHighlightRole(chat.role)">{{ chat.role }} さん</a>: {{ chat.message }}</span>
+            </li>
           </ul>
           <p v-if="chatList.length === 0">まだメッセージがありません。</p>
         </div>
@@ -184,13 +187,6 @@ const registerSocketEvent = () => {
           <button class="button-normal" @click="onPublish">投稿</button>
         </div>
       </div>
-      <div class="mt-5" v-if="chatList.length !== 0">
-        <ul>
-          <li class="item mt-4" v-for="(chat, i) in chatList" :key="i">
-            <span class="rolehighlight" v-if="chat.role === highlightRole"><a>{{ chat.role }} さん</a>: {{ chat.message }}</span>
-            <span v-else><a class="role" @click="setHighlightRole(chat.role)">{{ chat.role }} さん</a>: {{ chat.message }}</span>
-          </li>
-        </ul>
 
       <!--右側の要素-->
       <div class="memo_box">
@@ -301,6 +297,7 @@ const registerSocketEvent = () => {
 
 .rolehighlight{
   color: darkorange;
+}
 
 .exit-button-container {
   text-align: right;
