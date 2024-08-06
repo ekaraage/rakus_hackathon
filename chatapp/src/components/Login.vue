@@ -48,7 +48,8 @@ const onEnter = () => {
 
 
       <div class="app-title">
-        <h1>ワードウルフ</h1>
+        <img src="../images/tattoo-5389284_1920.png" width="300">
+        <h1 class="chokokutai-regular">ワードウルフ</h1>
       </div>
 
       <div class="login-form">
@@ -68,7 +69,7 @@ const onEnter = () => {
 <style scoped>
 .login {
   margin: 20px auto;
-  width: 350px;
+  width: 400px;
 }
 
 .usernname {
@@ -82,6 +83,7 @@ const onEnter = () => {
 .app-title {
   text-align: center;
   color: #777;
+  margin-bottom: 15px;
 }
 
 .login-form {
