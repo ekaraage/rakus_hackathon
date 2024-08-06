@@ -21,6 +21,10 @@ const chatList = reactive([])
 const selected = ref("")
 const popupVisible = ref(false)
 const showTestButton = ref(false)  // デバッグ用ボタンの表示制御
+const startTime = ref(new Date())
+const nowTime = ref(new Date())
+const duration = ref(0)
+const seconds = ref(0)
 
 // #region norm variable
 let highlightRole = ""
@@ -30,11 +34,15 @@ let highlightRole = ""
 onMounted(() => {
   document.documentElement.style.setProperty('--background-color', '#FFC04C');// 背景色を指定可能
   registerSocketEvent()
+  setInterval(() => { 
+        nowTime.value = new Date()
+        seconds.value=(Math.round(duration.value/1000) - (Math.round(nowTime.value/1000)-Math.round(startTime.value/1000)))
+      }, 1000)
 })
 // #endregion
 
 // #region browser event handler
-// 投稿メッセージをサーバに送信する
+// 投稿メッセージをサーバに送信する  
 const onPublish = () => {
   // 入力欄を初期化
   socket.emit("publishEvent", { name: userName.value, content: chatContent.value })
@@ -107,6 +115,8 @@ const onUpdateAllUsers = (data) => {
 
 // サーバから受信したゲーム開始メッセージを画面上に表示する
 const onReceiveGameStart = (data) => {
+  startTime.value = data.startTime
+  duration.value = data.duration
   chatList.unshift({ role: -1, message: `ゲームを開始しました。テーマは${data}です。` })
 }
 
@@ -157,6 +167,14 @@ const registerSocketEvent = () => {
   socket.on("updateAllUsers", (data) => {
     onUpdateAllUsers(data)
   })
+
+  socket.on("vote", (data) => { 
+    onVote()
+  })
+
+  socket.on("timeUp", (data) => { 
+    showPopup()
+  })
 }
 // #endregion
 </script>
@@ -196,7 +214,9 @@ const registerSocketEvent = () => {
       </div>
       <!--右側の要素-->
       <div class="memo_box">
-        <div>time</div>
+        <div class = "timer">
+        <p  v-if = "showTimer">残り {{ seconds }} 秒</p> 
+        </div>
         <div class="memo_area mt-5">
           <textarea variant="outlined" placeholder="メモ内容" rows="15" class="memo_area" v-model="memoContent"></textarea>
         </div>
