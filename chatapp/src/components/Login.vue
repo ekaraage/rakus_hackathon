@@ -7,7 +7,7 @@ import socketManager from '../socketManager.js'
 import { onMounted } from "vue";
 
 onMounted(() => {
-  document.documentElement.style.setProperty('--background-color', '#E8AC51');
+  document.documentElement.style.setProperty('--background-color', '#FFC04C');
 });
 
 // #region global state
