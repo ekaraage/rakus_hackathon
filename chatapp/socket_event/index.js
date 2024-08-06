@@ -51,10 +51,9 @@ export default (io, socket) => {
       });
       setInterval(() => { 
         nowTime = new Date()
-        console.log(seconds)
         seconds = (Math.round(duration / 1000) - (Math.round(nowTime / 1000) - Math.round(startTime / 1000)))
         if (seconds == 0) { 
-          socket.broadcast.emit("timeUp", data)
+          io.sockets.emit("timeUp", data)
         }
       }, 1000)
 

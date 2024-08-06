@@ -117,7 +117,7 @@ const onUpdateAllUsers = (data) => {
 const onReceiveGameStart = (data) => {
   startTime.value = data.startTime
   duration.value = data.duration
-  chatList.unshift({ role: -1, message: `ゲームを開始しました。テーマは${data}です。` })
+  chatList.unshift({ role: -1, message: `ゲームを開始しました。テーマは${data.selectedTheme}です。` })
 }
 
 // 投票結果とウルフ，退出を促すメッセージを画面上に表示する
@@ -215,7 +215,7 @@ const registerSocketEvent = () => {
       <!--右側の要素-->
       <div class="memo_box">
         <div class = "timer">
-        <p  v-if = "showTimer">残り {{ seconds }} 秒</p> 
+        <p v-if = "showTimer">残り {{ seconds.value }} 秒</p> 
         </div>
         <div class="memo_area mt-5">
           <textarea variant="outlined" placeholder="メモ内容" rows="15" class="memo_area" v-model="memoContent"></textarea>
