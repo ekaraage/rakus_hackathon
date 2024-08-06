@@ -48,8 +48,12 @@ onMounted(() => {
 // #region browser event handler
 // 投稿メッセージをサーバに送信する  
 const onPublish = () => {
-  // 入力欄を初期化
+  if (!chatContent.value.trim()) {
+    alert("投稿内容を入力してください。")
+    return
+  }
   socket.emit("publishEvent", { name: userName.value, content: chatContent.value })
+  // 入力欄を初期化
   chatContent.value = ""
 
 }
@@ -58,14 +62,14 @@ const onPublish = () => {
 const onExit = () => {
   socket.emit("exitEvent", userName.value)
 }
-
+/*
 // メモを画面上に表示する
 const onMemo = () => {
   // メモの内容を表示
   chatList.unshift({ role: -1, message: `${userName.value}さんのメモ: ${chatContent.value}` })
   // 入力欄を初期化
   chatContent.value = ""
-}
+}*/
 
 // 強調表示のユーザーを変更
 const setHighlightRole = (role) => {
@@ -244,7 +248,6 @@ const registerSocketEvent = () => {
 
   <!-- テストボタンの表示制御 -->
   <button v-if="showTestButton" class="button-normal" @click="showPopup">テスト</button>
-
   <div id="vote" v-if="popupVisible">
     <v-radio-group v-model="selected" background-color="black">
       <v-radio v-for="(name, index) in allUsers" :key="index" :label="name" :value="name" color="primary"></v-radio>
