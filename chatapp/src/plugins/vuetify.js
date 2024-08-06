@@ -5,7 +5,13 @@ import * as directives from "vuetify/directives"
 
 const customTheme = {
   colors: {
-    primary: "#3498db",
+    primary: "#4caf50",
+    secondary: "#8bc34a",
+    accent: "#cddc39",
+    error: "#ffeb3b",
+    warning: "#ffc107",
+    info: "#ff5722",
+    success: "#795548",
   }
 }
 

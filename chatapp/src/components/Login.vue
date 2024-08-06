@@ -3,6 +3,13 @@ import { inject, ref } from "vue"
 import { useRouter } from "vue-router"
 import socketManager from '../socketManager.js'
 
+//background colorの変更
+import { onMounted } from "vue";
+
+onMounted(() => {
+  document.documentElement.style.setProperty('--background-color', '#FFC04C');
+});
+
 // #region global state
 const userName = inject("userName")
 // #endregion
@@ -36,20 +43,77 @@ const onEnter = () => {
 </script>
 
 <template>
-  <div class="mx-auto my-5 px-4">
-    <h1 class="text-h3 font-weight-medium">Vue.js Chat サンプル</h1>
-    <div class="mt-10">
-      <p>ユーザー名</p>
-      <input type="text" class="user-name-text" v-model="inputUserName"  />
+  <div class="login">
+    <div class="usernname">
+
+
+      <div class="app-title">
+        <h1>ワードウルフ</h1>
+      </div>
+
+      <div class="login-form">
+        <div class="control-group">
+          <input type="text" class="login-field" placeholder="username" v-model="inputUserName" />
+        </div>
+      </div>
+
+
+      <button type="button" @click="onEnter" class="button">入室する</button>
     </div>
-    <button type="button" @click="onEnter" class="button-normal">入室する</button>
   </div>
 </template>
 
+
+
 <style scoped>
-.user-name-text {
-  width: 200px;
-  border: 1px solid #888;
-  margin-bottom: 16px;
+.login {
+  margin: 20px auto;
+  width: 350px;
+}
+
+.usernname {
+  background-color: #FFF;
+  padding: 40px;
+  border-radius: 5px
+}
+
+
+
+.app-title {
+  text-align: center;
+  color: #777;
+}
+
+.login-form {
+  text-align: center;
+}
+
+.control-group {
+  margin-bottom: 15px;
+}
+
+input {
+  text-align: center;
+  background-color: #ECF0F1;
+  border: 2px solid transparent;
+  border-radius: 3px;
+  font-size: 16px;
+  font-weight: 200;
+  padding: 10px 0;
+  width: 250px;
+  transition: border .5s;
+}
+
+.button {
+  border: 2px solid transparent;
+  background: #518EE8;
+  color: #ffffff;
+  font-size: 16px;
+  line-height: 25px;
+  padding: 10px 0;
+  border-radius: 3px;
+  display: block;
+  width: 250px;
+  margin: 0 auto;
 }
 </style>

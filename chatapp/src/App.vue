@@ -1,5 +1,6 @@
 <script setup>
-import { provide, ref } from "vue"
+import { provide, ref, reactive } from "vue"
+
 
 // #region reactive state
 const userName = ref("")
@@ -7,6 +8,7 @@ const userName = ref("")
 
 // #region global variable
 provide("userName", userName)
+
 // #endregion
 </script>
 
