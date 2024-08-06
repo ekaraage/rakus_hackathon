@@ -57,11 +57,11 @@ const onMemo = () => {
 
 // 強調表示のユーザーを変更
 const setHighlightRole = (role) => {
-  if(role !== -1){
+  if (role !== -1) {
     highlightRole = role
   }
   // 再描画にはchatListの長さ操作が必要
-  chatList.push({role:-1, message:"再描画中"})
+  chatList.push({ role: -1, message: "再描画中" })
   chatList.pop()
 }
 
@@ -98,7 +98,7 @@ const onReceiveExit = (data) => {
 
 // サーバから受信した投稿メッセージを画面上に表示する
 const onReceivePublish = (data) => {
-  chatList.unshift({role:data.name, message:data.content})
+  chatList.unshift({ role: data.name, message: data.content })
 }
 
 const onUpdateAllUsers = (data) => {
@@ -115,7 +115,7 @@ const onGameFinish = (data) => {
   // サーバから受信した一番投票数が多かった人を受信して画面上に表示する
   chatList.unshift({ role: -1, message: data.voted + "がウルフと疑われています。" })
   // 誰がウルフかを画面上に表示する
-  chatList.unshift({role:-1, message:data.wolf + "がウルフです。"})
+  chatList.unshift({ role: -1, message: data.wolf + "がウルフです。" })
   //退出を促すメッセージを画面上に表示する
   // 1分後に自動でルームを閉じる
   chatList.unshift({ role: -1, message: "1分後に自動でルームを閉じます。" })
@@ -173,15 +173,17 @@ const registerSocketEvent = () => {
         <div class="chat_area mt-5">
           <ul>
             <li class="item mt-4" v-for="(chat, i) in chatList" :key="i">
-            <span class="system-message" v-if="chat.role === -1">
-              システム：{{ chat.message }}
+              <span class="system-message" v-if="chat.role === -1">
+                システム：{{ chat.message }}
               </span>
-            <span v-else>
-              <span class="rolehighlight" v-if="chat.role === highlightRole"><a>{{ chat.role }} さん</a>: {{ chat.message }}</span>
-              <span v-else><a class="role" @click="setHighlightRole(chat.role)">{{ chat.role }} さん</a>: {{ chat.message }}</span>
-            </span>
-          </li>
-        </ul>
+              <span v-else>
+                <span class="rolehighlight" v-if="chat.role === highlightRole"><a>{{ chat.role }} さん</a>: {{ chat.message
+                }}</span>
+                <span v-else><a class="role" @click="setHighlightRole(chat.role)">{{ chat.role }} さん</a>: {{ chat.message
+                }}</span>
+              </span>
+            </li>
+          </ul>
           <p v-if="chatList.length === 0">まだメッセージがありません。</p>
         </div>
 
@@ -201,12 +203,11 @@ const registerSocketEvent = () => {
       </div>
     </div>
   </div>
-
-  <router-link to="/" class="link">
-    <div class="exit-button-container">
+  <div class="exit-button-container">
+    <router-link to="/" class="link">
       <button type="button" class="button-normal button-exit" @click="onExit">退室する</button>
-    </div>
-  </router-link>
+    </router-link>
+  </div>
 
 
   <!-- テストボタンの表示制御 -->
@@ -296,13 +297,14 @@ const registerSocketEvent = () => {
 .system-message {
   color: blue;
 }
-.role{
+
+.role {
   cursor: pointer;
   padding: 1px;
   border-bottom: solid 1px #0005;
 }
 
-.rolehighlight{
+.rolehighlight {
   color: darkorange;
 }
 
