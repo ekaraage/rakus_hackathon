@@ -22,6 +22,8 @@ const selected = ref("")
 const popupVisible = ref(false)
 const showTestButton = ref(false)  // デバッグ用ボタンの表示制御
 
+// #region norm variable
+let highlightRole = ""
 // #endregion
 
 // #region lifecycle
@@ -51,7 +53,16 @@ const onMemo = () => {
   chatList.unshift({ role: -1, message: `${userName.value}さんのメモ: ${chatContent.value}` })
   // 入力欄を初期化
   chatContent.value = ""
-  console.log(chatList)
+}
+
+// 強調表示のユーザーを変更
+const setHighlightRole = (role) => {
+  if(role !== -1){
+    highlightRole = role
+  }
+  // 再描画にはchatListの長さ操作が必要
+  chatList.push({role:-1, message:"再描画中"})
+  chatList.pop()
 }
 
 const onVote = () => {
@@ -87,7 +98,7 @@ const onReceiveExit = (data) => {
 
 // サーバから受信した投稿メッセージを画面上に表示する
 const onReceivePublish = (data) => {
-  chatList.unshift({ role: data.name, message: `${data.name}さん：${data.content}` })
+  chatList.unshift({role:data.name, message:data.content})
 }
 
 const onUpdateAllUsers = (data) => {
@@ -173,6 +184,13 @@ const registerSocketEvent = () => {
           <button class="button-normal" @click="onPublish">投稿</button>
         </div>
       </div>
+      <div class="mt-5" v-if="chatList.length !== 0">
+        <ul>
+          <li class="item mt-4" v-for="(chat, i) in chatList" :key="i">
+            <span class="rolehighlight" v-if="chat.role === highlightRole"><a>{{ chat.role }} さん</a>: {{ chat.message }}</span>
+            <span v-else><a class="role" @click="setHighlightRole(chat.role)">{{ chat.role }} さん</a>: {{ chat.message }}</span>
+          </li>
+        </ul>
 
       <!--右側の要素-->
       <div class="memo_box">
@@ -274,6 +292,15 @@ const registerSocketEvent = () => {
   color: #000;
   margin-top: 8px;
 }
+
+.role{
+  cursor: pointer;
+  padding: 1px;
+  border-bottom: solid 1px #0005;
+}
+
+.rolehighlight{
+  color: darkorange;
 
 .exit-button-container {
   text-align: right;
