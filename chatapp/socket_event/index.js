@@ -72,6 +72,7 @@ export default (io, socket) => {
     nowTime = new Date()
     isStarted = false
     socket.broadcast.emit("exitEvent", data)
+    socket.broadcast.emit("gameCanceledEvent")
     updateAllUsers()
   })
 
