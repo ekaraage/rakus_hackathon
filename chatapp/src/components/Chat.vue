@@ -175,6 +175,11 @@ const registerSocketEvent = () => {
   socket.on("timeUp", (data) => { 
     showPopup()
   })
+
+  socket.on("gameCanceledEvent", () => {
+    alert("ゲームがキャンセルされました。")
+    closePopup()
+  })
 }
 // #endregion
 </script>

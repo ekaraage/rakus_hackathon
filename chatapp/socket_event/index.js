@@ -6,6 +6,7 @@ const theme = "x"
 const wolf_theme = "y"
 const playerNum = 3
 const wolfIndex = Math.floor(Math.random() * playerNum)
+let timeCounter = null
 let isStarted = false
 let nowTime = new Date()
 const duration = 3 * 1000
@@ -49,7 +50,7 @@ export default (io, socket) => {
           socket.emit("gameStartEvent", {selectedTheme: selectedTheme, startTime: startTime, duration:duration });
         }
       });
-      setInterval(() => { 
+      timeCounter = setInterval(() => { 
         nowTime = new Date()
         seconds = (Math.round(duration / 1000) - (Math.round(nowTime / 1000) - Math.round(startTime / 1000)))
         if (seconds == 0) { 
@@ -65,7 +66,13 @@ export default (io, socket) => {
   // 退室メッセージをクライアントに送信する
   socket.on("exitEvent", (data) => {
     removeUser(socket)
+    clearInterval(timeCounter)
+    timeCounter = null
+    seconds = 0
+    nowTime = new Date()
+    isStarted = false
     socket.broadcast.emit("exitEvent", data)
+    socket.broadcast.emit("gameCanceledEvent")
     updateAllUsers()
   })
 
@@ -95,6 +102,10 @@ export default (io, socket) => {
   })
   socket.on("roomCloseEvent", () => {
     allUsers.splice(0, allUsers.length)
+    clearInterval(timeCounter)
+    timeCounter = null
+    seconds = 0
+    nowTime = new Date()
     isStarted = false
   })
 }
