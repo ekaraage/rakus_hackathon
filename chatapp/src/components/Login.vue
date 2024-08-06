@@ -23,9 +23,18 @@ const socket = socketManager.getInstance()
 const inputUserName = ref("")
 // #endregion
 
+
+const waitForGetIsStarted = (socket) => {
+  return new Promise((resolve, reject) => {
+    socket.on("isStarted", (isStarted) => {
+      resolve(isStarted)
+    })
+  })
+}
+
 // #region browser event handler
 // 入室メッセージをクライアントに送信する
-const onEnter = () => {
+const onEnter = async () => {
   // ユーザー名が入力されているかチェック
   if (!inputUserName.value) {
     alert('ユーザー名を入力してください。');
@@ -34,6 +43,12 @@ const onEnter = () => {
   // 入室メッセージを送信
   // const inMessage = inputUserName.value + "さんが入室しました。";
   socket.emit("enterEvent", inputUserName.value);
+  // ゲームが開始しているかを取得
+  const isStarted = await waitForGetIsStarted(socket)
+  if (isStarted) {
+    alert('ゲームがすでに開始されています。入室できません。');
+    return;
+  }
   // 全体で使用するnameに入力されたユーザー名を格納
   userName.value = inputUserName.value;
   // チャット画面へ遷移

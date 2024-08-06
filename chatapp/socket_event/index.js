@@ -6,6 +6,7 @@ const theme = "x"
 const wolf_theme = "y"
 const playerNum = 3
 const wolfIndex = Math.floor(Math.random() * playerNum)
+let isStarted = false
 let nowTime = new Date()
 const duration = 3 * 1000
 let seconds=100000000
@@ -25,6 +26,10 @@ export default (io, socket) => {
   }
   // 入室メッセージをクライアントに送信する
   socket.on("enterEvent", (data) => {
+    socket.emit("isStarted", isStarted)
+    if (isStarted) {
+      return;
+    }
     socket.broadcast.emit("enterEvent", data)
     //userStore.addUser(data, socket, 0)
     allUsers.push({
@@ -34,6 +39,7 @@ export default (io, socket) => {
     })
     updateAllUsers()
     if (allUsers.length === playerNum) {
+      isStarted = true
       let startTime=new Date()
       allUsers.forEach((user, index) => {
         const selectedTheme = (index === wolfIndex) ? wolf_theme : theme
@@ -89,6 +95,7 @@ export default (io, socket) => {
   })
   socket.on("roomCloseEvent", () => {
     allUsers.splice(0, allUsers.length)
+    isStarted = false
   })
 }
 
