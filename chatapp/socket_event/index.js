@@ -17,6 +17,9 @@ export default (io, socket) => {
      })
     io.sockets.emit("updateAllUsers",allUsersName)
   }
+  const removeUser = (socket) => {
+    allUsers.splice(allUsers.findIndex(u => u.socket.id === socket.id), 1)
+  }
   // 入室メッセージをクライアントに送信する
   socket.on("enterEvent", (data) => {
     socket.broadcast.emit("enterEvent", data)
@@ -42,7 +45,7 @@ export default (io, socket) => {
 
   // 退室メッセージをクライアントに送信する
   socket.on("exitEvent", (data) => {
-    //removeUser(socket)
+    removeUser(socket)
     socket.broadcast.emit("exitEvent", data)
     updateAllUsers()
   })
