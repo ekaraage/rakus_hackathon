@@ -115,7 +115,7 @@ const onGameFinish = (data) => {
   // サーバから受信した一番投票数が多かった人を受信して画面上に表示する
   chatList.unshift({ role: -1, message: data.voted + "がウルフと疑われています。" })
   // 誰がウルフかを画面上に表示する
-  chatList.unshift({ role: -1, message: data.wolf + "がウルフと疑われています。" })
+  chatList.unshift({role:-1, message:data.wolf + "がウルフです。"})
   //退出を促すメッセージを画面上に表示する
   // 1分後に自動でルームを閉じる
   chatList.unshift({ role: -1, message: "1分後に自動でルームを閉じます。" })
@@ -173,10 +173,15 @@ const registerSocketEvent = () => {
         <div class="chat_area mt-5">
           <ul>
             <li class="item mt-4" v-for="(chat, i) in chatList" :key="i">
+            <span class="system-message" v-if="chat.role === -1">
+              システム：{{ chat.message }}
+              </span>
+            <span v-else>
               <span class="rolehighlight" v-if="chat.role === highlightRole"><a>{{ chat.role }} さん</a>: {{ chat.message }}</span>
               <span v-else><a class="role" @click="setHighlightRole(chat.role)">{{ chat.role }} さん</a>: {{ chat.message }}</span>
-            </li>
-          </ul>
+            </span>
+          </li>
+        </ul>
           <p v-if="chatList.length === 0">まだメッセージがありません。</p>
         </div>
 
@@ -187,7 +192,6 @@ const registerSocketEvent = () => {
           <button class="button-normal" @click="onPublish">投稿</button>
         </div>
       </div>
-
       <!--右側の要素-->
       <div class="memo_box">
         <div>time</div>
@@ -289,6 +293,9 @@ const registerSocketEvent = () => {
   margin-top: 8px;
 }
 
+.system-message {
+  color: blue;
+}
 .role{
   cursor: pointer;
   padding: 1px;
