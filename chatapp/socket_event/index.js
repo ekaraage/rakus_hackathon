@@ -18,6 +18,9 @@ export default (io, socket) => {
      })
     io.sockets.emit("updateAllUsers",allUsersName)
   }
+  const removeUser = (socket) => {
+    allUsers.splice(allUsers.findIndex(u => u.socket.id === socket.id), 1)
+  }
   // 入室メッセージをクライアントに送信する
   socket.on("enterEvent", (data) => {
     socket.emit("isStarted", isStarted)
@@ -48,7 +51,7 @@ export default (io, socket) => {
 
   // 退室メッセージをクライアントに送信する
   socket.on("exitEvent", (data) => {
-    //removeUser(socket)
+    removeUser(socket)
     socket.broadcast.emit("exitEvent", data)
     updateAllUsers()
   })
@@ -67,7 +70,10 @@ export default (io, socket) => {
       var votedpls = []
       var votedpl_score = 0
       allUsers.forEach(u => {
-        if (u.voted > votedpl_score) { votedpls = [u.name] }
+        if (u.voted > votedpl_score){
+          votedpls = [u.name]
+          votedpl_score = u.voted
+        }
         else if (u.voted === votedpl_score) { votedpls.push(u.name) }
       })
       const votedpls_str = votedpls.join(" さんと ") + " さん"
