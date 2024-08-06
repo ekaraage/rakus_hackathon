@@ -24,10 +24,10 @@ const inputUserName = ref("")
 // #endregion
 
 
-const waitForGetIsStarted = (socket) => {
+const waitForGetIsStartedAndAllUsers = (socket) => {
   return new Promise((resolve, reject) => {
-    socket.on("isStarted", (isStarted) => {
-      resolve(isStarted)
+    socket.on("isStartedAndAllUsers", (isStartedAndAllUsers) => {
+      resolve(isStartedAndAllUsers)
     })
   })
 }
@@ -42,13 +42,20 @@ const onEnter = async () => {
   }
   // 入室メッセージを送信
   // const inMessage = inputUserName.value + "さんが入室しました。";
-  socket.emit("enterEvent", inputUserName.value);
+  socket.emit("tryenterEvent");
   // ゲームが開始しているかを取得
-  const isStarted = await waitForGetIsStarted(socket)
+  const isStartedAndAllUsers = await waitForGetIsStartedAndAllUsers(socket)
+  const isStarted = isStartedAndAllUsers.isStarted
+  const allUsersName = isStartedAndAllUsers.allUsersName
   if (isStarted) {
     alert('ゲームがすでに開始されています。入室できません。');
     return;
   }
+  if (allUsersName.includes(inputUserName.value)) {
+    alert('この名前はすでに使われています。');
+    return;
+  }
+  socket.emit("enterEvent", inputUserName.value);
   // 全体で使用するnameに入力されたユーザー名を格納
   userName.value = inputUserName.value;
   // チャット画面へ遷移
