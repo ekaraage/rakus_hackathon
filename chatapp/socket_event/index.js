@@ -6,6 +6,9 @@ const theme = "x"
 const wolf_theme = "y"
 const playerNum = 3
 const wolfIndex = Math.floor(Math.random() * playerNum)
+let nowTime = new Date()
+const duration = 3 * 1000
+let seconds=100000000
 
 
 
@@ -26,17 +29,28 @@ export default (io, socket) => {
       socket: socket,
       voted: 0
     })
+    updateAllUsers()
     if (allUsers.length === playerNum) {
+      let startTime=new Date()
       allUsers.forEach((user, index) => {
         const selectedTheme = (index === wolfIndex) ? wolf_theme : theme
         if (socket.id !== user.socket.id) {
-          socket.to(user.socket.id).emit("gameStartEvent", selectedTheme);
+          socket.to(user.socket.id).emit("gameStartEvent", {selectedTheme: selectedTheme, startTime: startTime, duration: duration });
         } else {
-          socket.emit("gameStartEvent", selectedTheme);
+          socket.emit("gameStartEvent", {selectedTheme: selectedTheme, startTime: startTime, duration:duration });
         }
       });
+      setInterval(() => { 
+        nowTime = new Date()
+        console.log(seconds)
+        seconds = (Math.round(duration / 1000) - (Math.round(nowTime / 1000) - Math.round(startTime / 1000)))
+        if (seconds == 0) { 
+          socket.broadcast.emit("timeUp", data)
+        }
+      }, 1000)
+
     }
-    updateAllUsers()
+
 
   })
 
