@@ -20,7 +20,7 @@ const memoContent = ref("")
 const chatList = reactive([])
 const selected = ref("")
 const popupVisible = ref(false)
-const showTestButton = ref(false)  // デバッグ用ボタンの表示制御
+const showTestButton = ref(true)  // デバッグ用ボタンの表示制御
 
 // #region norm variable
 let highlightRole = ""
