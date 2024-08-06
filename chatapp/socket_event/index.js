@@ -64,7 +64,10 @@ export default (io, socket) => {
       var votedpls = []
       var votedpl_score = 0
       allUsers.forEach(u => {
-        if (u.voted > votedpl_score) { votedpls = [u.name] }
+        if (u.voted > votedpl_score){
+          votedpls = [u.name]
+          votedpl_score = u.voted
+        }
         else if (u.voted === votedpl_score) { votedpls.push(u.name) }
       })
       const votedpls_str = votedpls.join(" さんと ") + " さん"
