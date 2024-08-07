@@ -35,21 +35,25 @@ let highlightRole = ""
 onMounted(() => {
   document.documentElement.style.setProperty('--background-color', '#FFC04C');// 背景色を指定可能
   registerSocketEvent()
-  setInterval(() => { 
+  setInterval(() => {
     nowTime = new Date()
     console.log(typeof (nowTime))
     console.log(nowTime)
-    seconds.value = Math.round(duration.value / 1000) - (Math.round(nowTime.getTime()/1000) - Math.round(startTime.getTime() / 1000))
+    seconds.value = Math.round(duration.value / 1000) - (Math.round(nowTime.getTime() / 1000) - Math.round(startTime.getTime() / 1000))
 
-    }, 1000)
+  }, 1000)
 })
 // #endregion
 
 // #region browser event handler
 // 投稿メッセージをサーバに送信する  
 const onPublish = () => {
-  // 入力欄を初期化
+  if (!chatContent.value.trim()) {
+    alert("投稿内容を入力してください。")
+    return
+  }
   socket.emit("publishEvent", { name: userName.value, content: chatContent.value })
+  // 入力欄を初期化
   chatContent.value = ""
 
 }
@@ -58,14 +62,14 @@ const onPublish = () => {
 const onExit = () => {
   socket.emit("exitEvent", userName.value)
 }
-
+/*
 // メモを画面上に表示する
 const onMemo = () => {
   // メモの内容を表示
   chatList.unshift({ role: -1, message: `${userName.value}さんのメモ: ${chatContent.value}` })
   // 入力欄を初期化
   chatContent.value = ""
-}
+}*/
 
 // 強調表示のユーザーを変更
 const setHighlightRole = (role) => {
@@ -174,13 +178,13 @@ const registerSocketEvent = () => {
     onUpdateAllUsers(data)
   })
 
-  socket.on("vote", (data) => { 
+  socket.on("vote", (data) => {
     onVote()
   })
 
-  socket.on("timeUp", (data) => { 
+  socket.on("timeUp", (data) => {
     showPopup()
-    showTimer.value=false
+    showTimer.value = false
   })
 
   socket.on("gameCanceledEvent", () => {
@@ -200,6 +204,9 @@ const registerSocketEvent = () => {
 
       <!--左側の要素-->
       <div class="chat_box">
+        <div class="timer">
+          <p v-show="showTimer">残り {{ seconds }} 秒</p>
+        </div>
         <div class="chat_area mt-5">
           <ul>
             <li class="item mt-4" v-for="(chat, i) in chatList" :key="i">
@@ -226,15 +233,15 @@ const registerSocketEvent = () => {
       </div>
       <!--右側の要素-->
       <div class="memo_box">
-        <div class = "timer">
-        <p v-show="showTimer">残り {{ seconds }} 秒</p> 
-        </div>
-        <div class="memo_area mt-5">
-          <textarea variant="outlined" placeholder="メモ内容" rows="15" class="memo_area" v-model="memoContent"></textarea>
+
+        <div class="memo_area">
+          <textarea variant="outlined" placeholder="メモ内容" class="memo_textarea" v-model="memoContent"></textarea>
         </div>
       </div>
     </div>
   </div>
+
+
   <div class="exit-button-container">
     <router-link to="/" class="link">
       <button type="button" class="button-normal button-exit" @click="onExit">退室する</button>
@@ -244,7 +251,6 @@ const registerSocketEvent = () => {
 
   <!-- テストボタンの表示制御 -->
   <button v-if="showTestButton" class="button-normal" @click="showPopup">テスト</button>
-
   <div id="vote" v-if="popupVisible">
     <v-radio-group v-model="selected" background-color="black">
       <v-radio v-for="(name, index) in allUsers" :key="index" :label="name" :value="name" color="primary"></v-radio>
@@ -295,26 +301,14 @@ const registerSocketEvent = () => {
   background-color: white;
 }
 
-.memo_area {
-  width: 100%;
-  height: 90%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  background-color: white;
-}
-
-.link {
-  text-decoration: none;
+.input_area {
+  margin-top: 8px;
 }
 
 .area {
   width: 100%;
   border: 1px solid #000;
   margin-top: 8px;
-}
-
-.util-ml-8px {
-  margin-left: 8px;
 }
 
 .button-container {
@@ -343,5 +337,54 @@ const registerSocketEvent = () => {
 .exit-button-container {
   text-align: right;
   margin-top: 8px;
+}
+
+.memo_area {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.memo_textarea {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #ccc;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.timer {
+  font-size: large;
+  color: red;
+
+}
+
+/* スマホサイズでのスタイル */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .chat_box {
+    width: 100%;
+  }
+
+  .area {
+    width: 100%;
+    height: 50px;
+    border: 1px solid #000;
+    margin-top: 8px;
+  }
+
+  .memo_box {
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  .memo_textarea {
+    height: 100px;
+  }
 }
 </style>

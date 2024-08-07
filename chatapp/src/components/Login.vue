@@ -91,16 +91,15 @@ const onEnter = async () => {
 <style scoped>
 .login {
   margin: 20px auto;
-  width: 400px;
+  width: 90%;
+  max-width: 400px;
 }
 
 .usernname {
   background-color: #FFF;
   padding: 40px;
-  border-radius: 5px
+  border-radius: 5px;
 }
-
-
 
 .app-title {
   text-align: center;
@@ -139,5 +138,22 @@ input {
   display: block;
   width: 250px;
   margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .usernname {
+    padding: 10px;
+  }
+
+  .app-title img {
+    width: 80%;
+    max-width: 200px;
+  }
+
+  input,
+  .button {
+    font-size: 14px;
+    padding: 8px 0;
+  }
 }
 </style>
