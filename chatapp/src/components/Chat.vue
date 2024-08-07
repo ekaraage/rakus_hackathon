@@ -21,10 +21,11 @@ const chatList = reactive([])
 const selected = ref("")
 const popupVisible = ref(false)
 const showTestButton = ref(false)  // デバッグ用ボタンの表示制御
-const startTime = ref(new Date())
-const nowTime = ref(new Date())
+let startTime = new Date()
+let nowTime = new Date()
 const duration = ref(0)
 const seconds = ref(0)
+const showTimer = ref(false)
 
 // #region norm variable
 let highlightRole = ""
@@ -35,9 +36,12 @@ onMounted(() => {
   document.documentElement.style.setProperty('--background-color', '#FFC04C');// 背景色を指定可能
   registerSocketEvent()
   setInterval(() => { 
-        nowTime.value = new Date()
-        seconds.value=(Math.round(duration.value/1000) - (Math.round(nowTime.value/1000)-Math.round(startTime.value/1000)))
-      }, 1000)
+    nowTime = new Date()
+    console.log(typeof (nowTime))
+    console.log(nowTime)
+    seconds.value = Math.round(duration.value / 1000) - (Math.round(nowTime.getTime()/1000) - Math.round(startTime.getTime() / 1000))
+
+    }, 1000)
 })
 // #endregion
 
@@ -117,6 +121,7 @@ const onUpdateAllUsers = (data) => {
 const onReceiveGameStart = (data) => {
   startTime.value = data.startTime
   duration.value = data.duration
+  showTimer.value = true
   chatList.unshift({ role: -1, message: `ゲームを開始しました。テーマは${data.selectedTheme}です。` })
 }
 
@@ -157,6 +162,7 @@ const registerSocketEvent = () => {
 
   socket.on("gameStartEvent", (data) => {
     onReceiveGameStart(data)
+
   })
 
   // 一番投票数が多かった人を受信する
@@ -174,6 +180,7 @@ const registerSocketEvent = () => {
 
   socket.on("timeUp", (data) => { 
     showPopup()
+    showTimer.value=false
   })
 
   socket.on("gameCanceledEvent", () => {
@@ -220,7 +227,7 @@ const registerSocketEvent = () => {
       <!--右側の要素-->
       <div class="memo_box">
         <div class = "timer">
-        <p v-if = "showTimer">残り {{ seconds.value }} 秒</p> 
+        <p v-show="showTimer">残り {{ seconds }} 秒</p> 
         </div>
         <div class="memo_area mt-5">
           <textarea variant="outlined" placeholder="メモ内容" rows="15" class="memo_area" v-model="memoContent"></textarea>
