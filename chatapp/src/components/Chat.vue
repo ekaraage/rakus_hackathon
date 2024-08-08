@@ -86,7 +86,7 @@ const onVote = () => {
     return;
   }
   socket.emit("vote", selected.value)
-  chatList.unshift({ role: -1, message: `あなたは${selected.value} さんに投票しました。` })
+  chatList.unshift({ role: -1, message: `あなたは ${selected.value} さんに投票しました。` })
   console.log(selected.value)
   closePopup()
 }
@@ -201,7 +201,7 @@ const registerSocketEvent = () => {
     チャットルーム
   </h1>
   <div class="mt-10">
-    <p>ログインユーザ：{{ userName }}さん</p>
+    <p>ログインユーザ：{{ userName }} さん</p>
     <div class="container">
 
       <!--左側の要素-->
@@ -259,7 +259,7 @@ const registerSocketEvent = () => {
         下のリストから一人選んで投票してください。
       </div>
       <v-radio-group v-model="selected" color="black">
-        <v-radio v-for="(name, index) in allUsers" :key="index" :label="name" :value="name" color="primary"></v-radio>
+        <v-radio v-for="(name, index) in allUsers" :key="index" :label="name" :value="name" color="blue"></v-radio>
       </v-radio-group>
       <div style="text-align:center">
         <p>怪しい人:<b>{{ selected }}</b></p>
