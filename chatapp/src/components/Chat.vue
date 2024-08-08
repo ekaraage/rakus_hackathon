@@ -253,12 +253,19 @@ const registerSocketEvent = () => {
 
   <!-- テストボタンの表示制御 -->
   <button v-if="showTestButton" class="button-normal" @click="showPopup">テスト</button>
-  <div id="vote" v-if="popupVisible">
-    <v-radio-group v-model="selected" background-color="black">
-      <v-radio v-for="(name, index) in allUsers" :key="index" :label="name" :value="name" color="primary"></v-radio>
-    </v-radio-group>
-    <p>怪しい人:<b>{{ selected }}</b></p>
-    <button class="button-normal" @click="onVote">投票</button>
+  <div id="overlay" v-if="popupVisible">
+    <div id="vote">
+      <div style="text-align:center; margin-bottom:1em">
+        下のリストから一人選んで投票してください。
+      </div>
+      <v-radio-group v-model="selected" color="black">
+        <v-radio v-for="(name, index) in allUsers" :key="index" :label="name" :value="name" color="primary"></v-radio>
+      </v-radio-group>
+      <div style="text-align:center">
+        <p>怪しい人:<b>{{ selected }}</b></p>
+        <button class="button-normal" @click="onVote">投票</button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -360,8 +367,28 @@ const registerSocketEvent = () => {
 .timer {
   font-size: large;
   color: red;
-
 }
+
+#overlay {
+  z-index: 1;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#vote {
+  z-index:2;
+  width:50%;
+  padding: 1em;
+  background:#fff;
+}
+
 
 /* スマホサイズでのスタイル */
 @media (max-width: 768px) {
@@ -388,5 +415,12 @@ const registerSocketEvent = () => {
   .memo_textarea {
     height: 100px;
   }
+
+  #vote {
+  z-index:2;
+  width:90%;
+  padding: 1em;
+  background:#fff;
+}
 }
 </style>
