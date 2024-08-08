@@ -9,8 +9,8 @@ const wolfIndex = Math.floor(Math.random() * playerNum)
 let timeCounter = null
 let isStarted = false
 let nowTime = new Date()
-const duration = 3 * 1000
-let seconds=100000000
+const duration = 10 * 1000
+let seconds = duration
 
 
 
@@ -54,12 +54,13 @@ export default (io, socket) => {
         if (socket.id !== user.socket.id) {
           socket.to(user.socket.id).emit("gameStartEvent", {selectedTheme: selectedTheme, startTime: startTime, duration: duration });
         } else {
-          socket.emit("gameStartEvent", {selectedTheme: selectedTheme, startTime: startTime, duration:duration });
+          socket.emit("gameStartEvent", {selectedTheme: selectedTheme, startTime: startTime, duration: duration });
         }
       });
       timeCounter = setInterval(() => { 
         nowTime = new Date()
         seconds = (Math.round(duration / 1000) - (Math.round(nowTime / 1000) - Math.round(startTime / 1000)))
+        console.log(seconds)
         if (seconds == 0) { 
           io.sockets.emit("timeUp", data)
         }
