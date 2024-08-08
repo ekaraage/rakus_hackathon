@@ -37,8 +37,7 @@ onMounted(() => {
   registerSocketEvent()
   setInterval(() => {
     nowTime = new Date()
-    console.log(typeof (nowTime))
-    console.log(nowTime)
+    console.log(typeof startTime)
     seconds.value = Math.round(duration.value / 1000) - (Math.round(nowTime.getTime() / 1000) - Math.round(startTime.getTime() / 1000))
 
   }, 1000)
@@ -87,6 +86,7 @@ const onVote = () => {
     return;
   }
   socket.emit("vote", selected.value)
+  chatList.unshift({ role: -1, message: `あなたは${selected.value} さんに投票しました。` })
   console.log(selected.value)
   closePopup()
 }
@@ -104,12 +104,12 @@ const closePopup = () => {
 // #region socket event handler
 // サーバから受信した入室メッセージ画面上に表示する
 const onReceiveEnter = (data) => {
-  chatList.unshift({ role: -1, message: `${data}さんが入室しました。` })
+  chatList.unshift({ role: -1, message: `${data} さんが入室しました。` })
 }
 
 // サーバから受信した退室メッセージを受け取り画面上に表示する
 const onReceiveExit = (data) => {
-  chatList.unshift({ role: -1, message: data + "さんが退出しました。" })
+  chatList.unshift({ role: -1, message: data + " さんが退出しました。" })
 }
 
 // サーバから受信した投稿メッセージを画面上に表示する
@@ -123,8 +123,9 @@ const onUpdateAllUsers = (data) => {
 
 // サーバから受信したゲーム開始メッセージを画面上に表示する
 const onReceiveGameStart = (data) => {
-  startTime.value = data.startTime
+  startTime = new Date(data.startTime)
   duration.value = data.duration
+  seconds.value = Math.round(data.duration / 1000)
   showTimer.value = true
   chatList.unshift({ role: -1, message: `ゲームを開始しました。テーマは${data.selectedTheme}です。` })
 }
@@ -134,7 +135,7 @@ const onGameFinish = (data) => {
   // サーバから受信した一番投票数が多かった人を受信して画面上に表示する
   chatList.unshift({ role: -1, message: data.voted + "がウルフと疑われています。" })
   // 誰がウルフかを画面上に表示する
-  chatList.unshift({ role: -1, message: data.wolf + "がウルフです。" })
+  chatList.unshift({ role: -1, message: data.wolf + " さんがウルフです。" })
   //退出を促すメッセージを画面上に表示する
   // 1分後に自動でルームを閉じる
   chatList.unshift({ role: -1, message: "1分後に自動でルームを閉じます。" })
@@ -184,6 +185,7 @@ const registerSocketEvent = () => {
 
   socket.on("timeUp", (data) => {
     showPopup()
+    alert("時間になりました。一人を選んで投票してください。")
     showTimer.value = false
   })
 
