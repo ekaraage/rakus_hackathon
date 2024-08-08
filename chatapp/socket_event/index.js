@@ -2,8 +2,8 @@ import { reactive } from "vue"
 
 
 const allUsers = reactive([])
-const theme = "x"
-const wolf_theme = "y"
+const theme = "メガネ"
+const wolf_theme = "サングラス"
 const playerNum = 3
 const wolfIndex = Math.floor(Math.random() * playerNum)
 let timeCounter = null
