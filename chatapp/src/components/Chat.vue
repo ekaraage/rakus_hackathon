@@ -191,6 +191,7 @@ const registerSocketEvent = () => {
 
   socket.on("gameCanceledEvent", () => {
     alert("ゲームがキャンセルされました。")
+    showTimer.value = false
     closePopup()
   })
 }
